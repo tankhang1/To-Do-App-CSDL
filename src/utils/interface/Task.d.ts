@@ -1,4 +1,4 @@
-declare interface ITask {
+export interface ITask {
   taskName: string;
   description?: string;
   createdAt: number;
