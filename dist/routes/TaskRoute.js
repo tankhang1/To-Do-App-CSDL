@@ -15,6 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const GetTask_1 = require("../services/TaskService/GetTask");
 const router = express_1.default.Router();
+router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.send("Hello");
+}));
 router.get("/tasks", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.query.userId;
     try {
