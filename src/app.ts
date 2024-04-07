@@ -3,7 +3,9 @@ import mongoose from "mongoose";
 import taskRoute from "./routes/TaskRoute";
 const app = express();
 app.use(express.json());
-
+// app.get("/", (req, res) => {
+//   res.send("Hello");
+// });
 app.use("/", taskRoute);
 
 mongoose
