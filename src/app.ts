@@ -1,7 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
 import taskRoute from "./routes/TaskRoute";
-
 const app = express();
 app.use(express.json());
 
