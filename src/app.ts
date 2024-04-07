@@ -1,16 +1,11 @@
 import express from "express";
 import mongoose from "mongoose";
-import router from "./routes/TaskRoute";
 import taskRoute from "./routes/TaskRoute";
 const app = express();
 app.use(express.json());
 // app.get("/", (req, res) => {
 //   res.send("Hello");
 // });
-app.use("/", router);
-
-app.use(express.json());
-
 app.use("/", taskRoute);
 
 mongoose
