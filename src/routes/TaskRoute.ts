@@ -4,11 +4,14 @@ import {
   getAllTasks,
   searchTasksByText,
 } from "../services/TaskService/GetTask";
+import { addTask } from "../services/TaskService/PostTask";
+import { updateTask } from "../services/TaskService/UpdateTask";
 
 const router = express.Router();
 
 router.delete("/deleteToDo", deleteTask);
-
+router.post("/addTask", addTask);
+router.put("/updateTask", updateTask);
 router.get("/", async (req: Request, res: Response) => {
   res.send("Hello");
 });

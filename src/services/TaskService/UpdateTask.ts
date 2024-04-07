@@ -3,20 +3,11 @@ import TaskModel from "../../models/TaskModel";
 
 export const updateTask = async (req: Request, res: Response) => {
   try {
-    const { id, taskName, description, createdAt, updatedAt, userId, status } = req.query;
-    if(!taskName || !description || !createdAt || !updatedAt || !userId ||!status) {
-      return res.status(400).send("ERROR ADD TASK: Missing required fields");
-   } 
-
+    const { id, ...body } = req.body;
     const updatedTask = await TaskModel.findByIdAndUpdate(
       id,
       {
-        taskName,
-        description,
-        createdAt,
-        updatedAt,
-        userId,
-        status,
+        ...body,
       },
       { new: true }
     );
