@@ -1,4 +1,6 @@
 import { Schema, model } from "mongoose";
+import {ITask} from "../utils/interface/Task"
+
 const TaskSchemma = new Schema<ITask>({
   taskName: {
     type: "String",
@@ -28,5 +30,5 @@ const TaskSchemma = new Schema<ITask>({
     default: false,
   },
 });
-const Task = model("Task", TaskSchemma);
-export default Task;
+const TaskModel = model<ITask>("Task", TaskSchemma);
+export default TaskModel;
