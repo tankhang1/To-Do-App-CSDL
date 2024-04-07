@@ -1,17 +1,26 @@
+import { Request, Response} from "express";
 import TaskModel from "../../models/TaskModel";
-import {ITask} from "../../utils/interface/Task"
 
-async function getAllTasks(userId: string): Promise<ITask[]> {
+export const getAllTasks = async (req: Request, res: Response) => {
+  const userId = req.query.userId as string;
+  if (!userId) {
+    return res.send({ status: 400, message: "ERROR GET TASK: Missing UserID" });
+  }
   try {
-    const tasks = await TaskModel.find({ userId });
-    return tasks;
+    const tasks = await TaskModel.find({ userId })
+    res.send({ status: 200, result: tasks });
   } catch (error) {
-    throw error;
+    res.send({ status: 500, message: "ERROR GET TASK: Internal Server Error" });
   }
 }
 
-async function searchTasksByText(userId: string, searchText: string): Promise<ITask[]> {
+export const searchTasksByText = async (req: Request, res: Response) => {
   try {
+    const userId = req.query.userId as string;
+    if (!userId) {
+      return res.send({ status: 400, message: "ERROR GET TASK: Missing UserID" });
+    }
+    const searchText = req.query.text as string;
     const tasks = await TaskModel.find({
       userId,
       $or: [
@@ -19,10 +28,9 @@ async function searchTasksByText(userId: string, searchText: string): Promise<IT
         { description: { $regex: searchText, $options: "i" } }
       ]
     });
-    return tasks;
+    res.send({ status: 200, result: tasks });
   } catch (error) {
-    throw error;
+    res.send({ status: 500, message: "ERROR GET TASK: Internal Server Error" });
   }
 }
 
-export { getAllTasks, searchTasksByText };

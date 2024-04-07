@@ -14,33 +14,32 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.searchTasksByText = exports.getAllTasks = void 0;
 const TaskModel_1 = __importDefault(require("../../models/TaskModel"));
-function getAllTasks(userId) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const tasks = yield TaskModel_1.default.find({ userId });
-            return tasks;
-        }
-        catch (error) {
-            throw error;
-        }
-    });
-}
+const getAllTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.query.userId;
+    try {
+        const tasks = yield TaskModel_1.default.find({ userId });
+        res.status(200).send(tasks);
+    }
+    catch (error) {
+        res.status(500).send(error);
+    }
+});
 exports.getAllTasks = getAllTasks;
-function searchTasksByText(userId, searchText) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const tasks = yield TaskModel_1.default.find({
-                userId,
-                $or: [
-                    { taskName: { $regex: searchText, $options: "i" } },
-                    { description: { $regex: searchText, $options: "i" } }
-                ]
-            });
-            return tasks;
-        }
-        catch (error) {
-            throw error;
-        }
-    });
-}
+const searchTasksByText = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const userId = req.query.userId;
+        const searchText = req.query.text;
+        const tasks = yield TaskModel_1.default.find({
+            userId,
+            $or: [
+                { taskName: { $regex: searchText, $options: "i" } },
+                { description: { $regex: searchText, $options: "i" } }
+            ]
+        });
+        res.status(200).send(tasks);
+    }
+    catch (error) {
+        res.status(500).send(error);
+    }
+});
 exports.searchTasksByText = searchTasksByText;
