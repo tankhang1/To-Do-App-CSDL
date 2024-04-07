@@ -30,5 +30,5 @@ const TaskSchemma = new mongoose_1.Schema({
         default: false,
     },
 });
-const Task = (0, mongoose_1.model)("Task", TaskSchemma);
-exports.default = Task;
+const TaskModel = (0, mongoose_1.model)("Task", TaskSchemma);
+exports.default = TaskModel;
