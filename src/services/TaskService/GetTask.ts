@@ -1,17 +1,20 @@
+import { Request, Response} from "express";
 import TaskModel from "../../models/TaskModel";
-import {ITask} from "../../utils/interface/Task"
 
-async function getAllTasks(userId: string): Promise<ITask[]> {
+export const getAllTasks = async (req: Request, res: Response) => {
+  const userId = req.query.userId as string;
   try {
-    const tasks = await TaskModel.find({ userId });
-    return tasks;
+    const tasks = await TaskModel.find({ userId })
+    res.status(200).send(tasks);
   } catch (error) {
-    throw error;
+    res.status(500).send(error);
   }
 }
 
-async function searchTasksByText(userId: string, searchText: string): Promise<ITask[]> {
+export const searchTasksByText = async (req: Request, res: Response) => {
   try {
+    const userId = req.query.userId as string;
+    const searchText = req.query.text as string;
     const tasks = await TaskModel.find({
       userId,
       $or: [
@@ -19,10 +22,9 @@ async function searchTasksByText(userId: string, searchText: string): Promise<IT
         { description: { $regex: searchText, $options: "i" } }
       ]
     });
-    return tasks;
+    res.status(200).send(tasks);
   } catch (error) {
-    throw error;
+    res.status(500).send(error);
   }
 }
 
-export { getAllTasks, searchTasksByText };
