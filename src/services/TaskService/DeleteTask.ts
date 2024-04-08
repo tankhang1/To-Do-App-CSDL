@@ -17,16 +17,16 @@ export const deleteTask = async (req: Request, res: Response) => {
    try {
       const { id } = req.query;
       if (!id) {
-         return res.send({ status: 400, message: "ERROR DELETE TASK: Missing task ID" });
+         return res.send({ status: 400, message: "ERROR GET TASK: Missing task ID" });
       } 
       const result = await Task.deleteOne({ _id: id });
       if (result.deletedCount === 0) {
-         return res.send({ status: 404, message: "ERROR DELETE TASK: Task not found" });
+         return res.send({ status: 404, message: "ERROR GET TASK: Task not found" });
       }
       res.send({ success: true, deletedCount: result.deletedCount });
    } catch(err) {
       console.error("ERROR DELETE TASK:", err);
-      res.send({ status: 500, message: "ERROR DELETE TASK: Internal Server Error" });
+      res.send({ status: 500, message: "ERROR GET TASK: Internal Server Error" });
    }
 }
 

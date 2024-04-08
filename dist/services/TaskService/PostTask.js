@@ -16,11 +16,17 @@ exports.addTask = void 0;
 const TaskModel_1 = __importDefault(require("../../models/TaskModel"));
 const addTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { taskName, description, createdAt, updatedAt, userId, status } = req.query;
-        if (!taskName || !description || !createdAt || !updatedAt || !userId || !status) {
+        const { taskName, description, createdAt, updatedAt, userId, status } = req.body;
+        console.log(!taskName, description, createdAt, updatedAt, userId, status);
+        if (!taskName ||
+            !description ||
+            !createdAt ||
+            !updatedAt ||
+            !userId ||
+            !status) {
             return res.status(400).send("ERROR ADD TASK: Missing required fields");
         }
-        const newTask = yield TaskModel_1.default.create(req.query);
+        const newTask = yield TaskModel_1.default.create(req.body);
         return res.status(200).json({ task: newTask });
     }
     catch (err) {

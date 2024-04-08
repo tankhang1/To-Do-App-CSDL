@@ -15,8 +15,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const DeleteTask_1 = require("../services/TaskService/DeleteTask");
 const GetTask_1 = require("../services/TaskService/GetTask");
+const PostTask_1 = require("../services/TaskService/PostTask");
+const UpdateTask_1 = require("../services/TaskService/UpdateTask");
 const router = express_1.default.Router();
 router.delete("/deleteToDo", DeleteTask_1.deleteTask);
+router.post("/addTask", PostTask_1.addTask);
+router.put("/updateTask", UpdateTask_1.updateTask);
 router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send("Hello");
 }));
@@ -41,4 +45,5 @@ router.get("/tasks/search", (req, res) => __awaiter(void 0, void 0, void 0, func
         res.status(500).send(error);
     }
 }));
+router.get('/getTodo/pagination', GetTask_1.getPaginatedTasks);
 exports.default = router;

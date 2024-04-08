@@ -3,6 +3,7 @@ import { deleteTask } from "../services/TaskService/DeleteTask";
 import {
   getAllTasks,
   searchTasksByText,
+  getPaginatedTasks
 } from "../services/TaskService/GetTask";
 import { addTask } from "../services/TaskService/PostTask";
 import { updateTask } from "../services/TaskService/UpdateTask";
@@ -15,6 +16,7 @@ router.put("/updateTask", updateTask);
 router.get("/", async (req: Request, res: Response) => {
   res.send("Hello");
 });
+
 router.get("/tasks", async (req: Request, res: Response) => {
   const userId = req.query.userId as string;
   try {
@@ -35,5 +37,7 @@ router.get("/tasks/search", async (req: Request, res: Response) => {
     res.status(500).send(error);
   }
 });
+
+router.get('/getTodo/pagination', getPaginatedTasks);
 
 export default router;
