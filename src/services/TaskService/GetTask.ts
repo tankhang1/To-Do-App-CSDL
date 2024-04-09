@@ -8,7 +8,7 @@ export const getAllTasks = async (req: Request, res: Response) => {
   }
   try {
     const tasks = await TaskModel.find({ userId })
-    res.send({ status: 200, result: tasks });
+    res.send({ status: 200, message: tasks });
   } catch (error) {
     res.send({ status: 500, message: "ERROR GET TASK: Internal Server Error" });
   }
@@ -28,7 +28,7 @@ export const searchTasksByText = async (req: Request, res: Response) => {
         { description: { $regex: searchText, $options: "i" } }
       ]
     });
-    res.send({ status: 200, result: tasks });
+    res.send({ status: 200, message: tasks });
   } catch (error) {
     res.send({ status: 500, message: "ERROR GET TASK: Internal Server Error" });
   }
