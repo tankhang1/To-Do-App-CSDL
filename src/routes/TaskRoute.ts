@@ -17,9 +17,9 @@ router.get("/", async (req: Request, res: Response) => {
   res.send("Hello");
 });
 
-router.get("/tasks", getAllTasks);
+router.get("/getTodo", getAllTasks);
 
-router.get("/tasks/search", searchTasksByText);
+router.get("/searchTodo", searchTasksByText);
 
 router.get('/getTodo/pagination', getPaginatedTasks);
 
