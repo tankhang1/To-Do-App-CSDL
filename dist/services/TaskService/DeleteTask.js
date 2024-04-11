@@ -28,17 +28,17 @@ const deleteTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     try {
         const { id } = req.query;
         if (!id) {
-            return res.send({ status: 400, message: "ERROR DELETE TASK: Missing task ID" });
+            return res.send({ status: 400, message: "ERROR GET TASK: Missing task ID" });
         }
         const result = yield TaskModel_1.default.deleteOne({ _id: id });
         if (result.deletedCount === 0) {
-            return res.send({ status: 404, message: "ERROR DELETE TASK: Task not found" });
+            return res.send({ status: 404, message: "ERROR GET TASK: Task not found" });
         }
         res.send({ success: true, deletedCount: result.deletedCount });
     }
     catch (err) {
         console.error("ERROR DELETE TASK:", err);
-        res.send({ status: 500, message: "ERROR DELETE TASK: Internal Server Error" });
+        res.send({ status: 500, message: "ERROR GET TASK: Internal Server Error" });
     }
 });
 exports.deleteTask = deleteTask;

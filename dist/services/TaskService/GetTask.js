@@ -14,35 +14,44 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getPaginatedTasks = exports.searchTasksByText = exports.getAllTasks = void 0;
 const TaskModel_1 = __importDefault(require("../../models/TaskModel"));
-function getAllTasks(userId) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const tasks = yield TaskModel_1.default.find({ userId });
-            return tasks;
-        }
-        catch (error) {
-            throw error;
-        }
-    });
-}
+const getAllTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.query.userId;
+    console.log("userId", userId);
+    if (!userId) {
+        return res.send({ status: 400, message: "ERROR GET TASK: Missing UserID" });
+    }
+    try {
+        const tasks = yield TaskModel_1.default.find({ taskName: "Đi ngủ" });
+        res.send({ status: 200, message: tasks });
+    }
+    catch (error) {
+        res.send({ status: 500, message: "ERROR GET TASK: Internal Server Error" });
+    }
+});
 exports.getAllTasks = getAllTasks;
-function searchTasksByText(userId, searchText) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const tasks = yield TaskModel_1.default.find({
-                userId,
-                $or: [
-                    { taskName: { $regex: searchText, $options: "i" } },
-                    { description: { $regex: searchText, $options: "i" } }
-                ]
+const searchTasksByText = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const userId = req.query.userId;
+        if (!userId) {
+            return res.send({
+                status: 400,
+                message: "ERROR GET TASK: Missing UserID",
             });
-            return tasks;
         }
-        catch (error) {
-            throw error;
-        }
-    });
-}
+        const searchText = req.query.text;
+        const tasks = yield TaskModel_1.default.find({
+            userId,
+            $or: [
+                { taskName: { $regex: searchText, $options: "i" } },
+                { description: { $regex: searchText, $options: "i" } },
+            ],
+        });
+        res.send({ status: 200, message: tasks });
+    }
+    catch (error) {
+        res.send({ status: 500, message: "ERROR GET TASK: Internal Server Error" });
+    }
+});
 exports.searchTasksByText = searchTasksByText;
 const getPaginatedTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { page = 1, limit = 3 } = req.query;

@@ -1,3 +1,6 @@
+import { ITask } from "./Task";
+
 declare interface IUser {
-  deviceId: string;
+  userId: string;
+  tasks?: ITask[];
 }

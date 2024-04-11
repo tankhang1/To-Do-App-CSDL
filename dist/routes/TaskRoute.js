@@ -24,26 +24,7 @@ router.put("/updateTask", UpdateTask_1.updateTask);
 router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send("Hello");
 }));
-router.get("/tasks", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const userId = req.query.userId;
-    try {
-        const tasks = yield (0, GetTask_1.getAllTasks)(userId);
-        res.status(200).send(tasks);
-    }
-    catch (error) {
-        res.status(500).send(error);
-    }
-}));
-router.get("/tasks/search", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const userId = req.query.userId;
-    const searchText = req.query.text;
-    try {
-        const tasks = yield (0, GetTask_1.searchTasksByText)(userId, searchText);
-        res.status(200).send(tasks);
-    }
-    catch (error) {
-        res.status(500).send(error);
-    }
-}));
+router.get("/getTodo", GetTask_1.getAllTasks);
+router.get("/searchTodo", GetTask_1.searchTasksByText);
 router.get('/getTodo/pagination', GetTask_1.getPaginatedTasks);
 exports.default = router;

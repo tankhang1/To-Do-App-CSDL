@@ -1,11 +1,12 @@
 import { Request, Response } from "express";
-import TaskModel from "../../models/TaskModel";
+import { IUser } from "../../utils/interface/User";
+import User from "../../models/UserModel";
 
 export const addTask = async (req: Request, res: Response) => {
   try {
     const { taskName, description, createdAt, updatedAt, userId, status } =
       req.body;
-    console.log(!taskName, description, createdAt, updatedAt, userId, status);
+    console.log(!taskName, description, createdAt, updatedAt, status);
     if (
       !taskName ||
       !description ||
@@ -16,8 +17,24 @@ export const addTask = async (req: Request, res: Response) => {
     ) {
       return res.status(400).send("ERROR ADD TASK: Missing required fields");
     }
-    const newTask = await TaskModel.create(req.body);
-    return res.status(200).json({ task: newTask });
+    const user: IUser | null = await User.findOne({ userId });
+    if (!user) {
+      const newTask = await User.create({
+        userId,
+        tasks: req.body,
+      });
+      return res.status(200).json({ task: newTask?.tasks });
+    }
+    const updatedTasks = user.tasks ? [...user.tasks] : [];
+    const updateUser = await User.findOneAndUpdate(
+      { userId },
+      { tasks: [req.body, ...updatedTasks] },
+      { new: true }
+    );
+    if (updateUser?.tasks) {
+      return res.status(200).json({ task: updateUser?.tasks[0] });
+    }
+    return res.status(400).send("Cannot add new task");
   } catch (err) {
     console.error("ERROR ADD TASK:", err);
     return res.status(500).send("ERROR ADD TASK: Internal Server Error");

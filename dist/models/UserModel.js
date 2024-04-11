@@ -7,6 +7,9 @@ const UserSchema = new mongoose_1.Schema({
         required: true,
         default: "",
     },
+    tasks: {
+        type: [Object],
+    },
 });
 const User = (0, mongoose_1.model)("User", UserSchema);
 exports.default = User;
