@@ -16,15 +16,28 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteTask = void 0;
 const UserModel_1 = __importDefault(require("../../models/UserModel"));
 const deleteTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
         const { _id, userId } = req.query;
         // const result = await Task.deleteOne({ _id: id });
         // if (result.deletedCount === 0) {
         //    return res.send({ status: 404, message: "ERROR GET TASK: Task not found" });
         // }
-        const user = yield UserModel_1.default.findOneAndUpdate({ userId: userId === null || userId === void 0 ? void 0 : userId.toString() }, { $pull: { tasks: { _id } } }, // Remove all instances of the task with the specified _id
-        { new: true });
-        return res.send({ success: true });
+        console.log("new tasks ", _id);
+        const user = yield UserModel_1.default.findOne({
+            userId: userId === null || userId === void 0 ? void 0 : userId.toString(),
+        });
+        if (user) {
+            const newTasks = (_a = user.tasks) === null || _a === void 0 ? void 0 : _a.filter((task) => task._id !== _id);
+            console.log("new tasks ", newTasks);
+            yield UserModel_1.default.findOneAndUpdate({ userId: userId === null || userId === void 0 ? void 0 : userId.toString() }, { tasks: newTasks }, // Remove all instances of the task with the specified _id
+            { new: true });
+            return res.send({ success: true });
+        }
+        return res.send({
+            status: 500,
+            message: "ERROR DELETE TASK: User id not found",
+        });
     }
     catch (err) {
         console.error("ERROR DELETE TASK:", err);

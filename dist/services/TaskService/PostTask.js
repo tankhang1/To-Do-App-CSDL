@@ -14,28 +14,31 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.addTask = void 0;
 const UserModel_1 = __importDefault(require("../../models/UserModel"));
+const crypto_1 = require("crypto");
 const addTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { taskName, description, createdAt, updatedAt, userId, status } = req.body;
-        console.log(!taskName, description, createdAt, updatedAt, status);
-        if (!taskName ||
-            !description ||
-            !createdAt ||
-            !updatedAt ||
-            !userId ||
-            !status) {
+        const { taskName, description, priority, userId, status } = req.body;
+        console.log(req.body);
+        if (!taskName || !description || !userId) {
             return res.status(400).send("ERROR ADD TASK: Missing required fields");
         }
         const user = yield UserModel_1.default.findOne({ userId });
         if (!user) {
             const newTask = yield UserModel_1.default.create({
                 userId,
-                tasks: req.body,
+                tasks: [
+                    Object.assign(Object.assign({}, req.body), { _id: (0, crypto_1.randomUUID)(), createdAt: new Date().getTime(), updatedAt: new Date().getTime() }),
+                ],
             });
             return res.status(200).json({ task: newTask === null || newTask === void 0 ? void 0 : newTask.tasks });
         }
         const updatedTasks = user.tasks ? [...user.tasks] : [];
-        const updateUser = yield UserModel_1.default.findOneAndUpdate({ userId }, { tasks: [req.body, ...updatedTasks] }, { new: true });
+        const updateUser = yield UserModel_1.default.findOneAndUpdate({ userId }, {
+            tasks: [
+                Object.assign(Object.assign({}, req.body), { _id: (0, crypto_1.randomUUID)(), createdAt: new Date().getTime(), updatedAt: new Date().getTime() }),
+                ...updatedTasks,
+            ],
+        }, { new: true });
         if (updateUser === null || updateUser === void 0 ? void 0 : updateUser.tasks) {
             return res.status(200).json({ task: updateUser === null || updateUser === void 0 ? void 0 : updateUser.tasks[0] });
         }

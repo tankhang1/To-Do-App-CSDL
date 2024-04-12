@@ -26,5 +26,5 @@ router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 }));
 router.get("/getTodo", GetTask_1.getAllTasks);
 router.get("/searchTodo", GetTask_1.searchTasksByText);
-router.get('/getTodo/pagination', GetTask_1.getPaginatedTasks);
+// router.get('/getTodo/pagination', getPaginatedTasks);
 exports.default = router;

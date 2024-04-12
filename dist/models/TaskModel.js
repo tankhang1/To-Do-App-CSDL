@@ -2,6 +2,15 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
 const TaskSchemma = new mongoose_1.Schema({
+    _id: {
+        type: "String",
+        require: true,
+    },
+    priority: {
+        type: "string",
+        default: "High",
+        enum: ["High", "Medium"],
+    },
     taskName: {
         type: "String",
         required: true,

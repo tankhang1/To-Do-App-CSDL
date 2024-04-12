@@ -28,18 +28,21 @@ const UserModel_1 = __importDefault(require("../../models/UserModel"));
 const updateTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const _a = req.body, { _id, userId } = _a, body = __rest(_a, ["_id", "userId"]);
+        console.log("update", req.body);
         const user = yield UserModel_1.default.findOne({ userId });
         if (!user) {
             return res.status(404).send("ERROR UPDATE TASK: User not found");
         }
-        const updatedTask = yield UserModel_1.default.findOneAndUpdate({ userId, "tasks._id": _id }, {
-            $set: { "tasks.$": Object.assign({ _id }, body) },
-        }, { new: true });
+        const tasks = user.tasks;
+        const newTasks = tasks === null || tasks === void 0 ? void 0 : tasks.map((task) => {
+            if (task._id === _id)
+                return Object.assign({}, req.body);
+            return task;
+        });
+        console.log("new", newTasks);
+        yield UserModel_1.default.findOneAndUpdate({ userId }, { tasks: newTasks }, { new: true });
         //console.log("updateTask", updatedTask);
-        if (!updatedTask) {
-            return res.status(404).send("ERROR UPDATE TASK: Task not found");
-        }
-        return res.status(200).json({ updatedTask });
+        return res.status(200);
     }
     catch (error) {
         console.error("ERROR UPDATE TASK:", error);

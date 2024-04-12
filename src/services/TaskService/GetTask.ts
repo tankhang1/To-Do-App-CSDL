@@ -21,7 +21,7 @@ export const getAllTasks = async (req: Request, res: Response) => {
       .skip(skip)
       .exec();
     return res.status(200).json({
-      data: user?.tasks,
+      data: user?.tasks ?? [],
       currentPage: page,
       totalPages: Math.ceil(user?.tasks?.length ?? 0 / limit),
       totalCount: user?.tasks?.length,
@@ -50,7 +50,7 @@ export const searchTasksByText = async (req: Request, res: Response) => {
         task.taskName.toLowerCase().includes(searchText.toLowerCase())
     );
 
-    res.send({ status: 200, message: tasks });
+    res.send({ status: 200, message: tasks ?? [] });
   } catch (error) {
     res.send({ status: 500, message: "ERROR GET TASK: Internal Server Error" });
   }
@@ -70,7 +70,7 @@ const getPaginatedTasks = async (req: Request, res: Response) => {
     const totalCount = await TaskModel.countDocuments();
 
     return res.status(200).json({
-      data: tasks,
+      data: tasks ?? [],
       currentPage: page,
       totalPages: Math.ceil(totalCount / limit),
       totalCount,

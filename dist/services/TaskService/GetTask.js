@@ -16,38 +16,35 @@ exports.getPaginatedTasks = exports.searchTasksByText = exports.getAllTasks = vo
 const TaskModel_1 = __importDefault(require("../../models/TaskModel"));
 const UserModel_1 = __importDefault(require("../../models/UserModel"));
 const getAllTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const userId = req.query.userId;
-    const { page = 1, limit = 3 } = req.query;
+    var _a, _b, _c;
+    let { userId, limit = 8, page = 1 } = req.query;
+    page = parseInt(page);
+    limit = parseInt(limit);
     if (!userId) {
         return res.send({ status: 400, message: "ERROR GET TASK: Missing UserID" });
     }
     try {
-        const user = yield UserModel_1.default.findOne({ userId });
-        res.send({ status: 200, message: user ? user === null || user === void 0 ? void 0 : user.tasks : [] });
+        const skip = (page - 1) * limit;
+        const user = yield UserModel_1.default.findOne({
+            userId: userId.toString(),
+        })
+            .limit(limit)
+            .skip(skip)
+            .exec();
+        return res.status(200).json({
+            data: user === null || user === void 0 ? void 0 : user.tasks,
+            currentPage: page,
+            totalPages: Math.ceil((_b = (_a = user === null || user === void 0 ? void 0 : user.tasks) === null || _a === void 0 ? void 0 : _a.length) !== null && _b !== void 0 ? _b : 0 / limit),
+            totalCount: (_c = user === null || user === void 0 ? void 0 : user.tasks) === null || _c === void 0 ? void 0 : _c.length,
+        });
     }
     catch (error) {
         res.send({ status: 500, message: "ERROR GET TASK: Internal Server Error" });
     }
-    // try {
-    //   const skip = (+page - 1) * +limit;
-    //   const tasks = await TaskModel.find().limit(+limit).skip(skip).exec();
-    //   const totalCount = await TaskModel.countDocuments();
-    //   return res.status(200).json({
-    //     data: tasks,
-    //     currentPage: page,
-    //     totalPages: Math.ceil(totalCount / +limit),
-    //     totalCount,
-    //   });
-    // } catch (error) {
-    //   console.error("ERROR GET PAGINATED TASKS:", error);
-    //   res.status(500).json({
-    //     status: 500,
-    //     message: "Internal Server Error",
-    //   });
-    // }
 });
 exports.getAllTasks = getAllTasks;
 const searchTasksByText = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _d;
     try {
         const userId = req.query.userId;
         if (!userId) {
@@ -57,12 +54,13 @@ const searchTasksByText = (req, res) => __awaiter(void 0, void 0, void 0, functi
             });
         }
         const searchText = req.query.text;
-        const tasks = yield TaskModel_1.default.find({
-            userId,
-            $or: [
-                { taskName: { $regex: searchText, $options: "i" } },
-                { description: { $regex: searchText, $options: "i" } },
-            ],
+        const user = yield UserModel_1.default.findOne({
+            userId: userId.toString(),
+        });
+        const tasks = (_d = user === null || user === void 0 ? void 0 : user.tasks) === null || _d === void 0 ? void 0 : _d.filter((task) => {
+            var _a;
+            return ((_a = task.description) === null || _a === void 0 ? void 0 : _a.toLowerCase().includes(searchText.toLowerCase())) ||
+                task.taskName.toLowerCase().includes(searchText.toLowerCase());
         });
         res.send({ status: 200, message: tasks });
     }
