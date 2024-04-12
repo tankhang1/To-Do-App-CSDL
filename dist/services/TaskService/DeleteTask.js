@@ -14,27 +14,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteTask = void 0;
-// export const deleteTask = async (taskId: string) => {
-//   try {
-//     const result = await Task.deleteOne({ _id: taskId });
-//     return { success: true, deletedCount: result.deletedCount };
-//   } catch (error) {
-//     console.error(error);
-//     throw new Error('Internal Server Error');
-//   }
-// };
-const TaskModel_1 = __importDefault(require("../../models/TaskModel"));
+const UserModel_1 = __importDefault(require("../../models/UserModel"));
 const deleteTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { id } = req.query;
-        if (!id) {
-            return res.send({ status: 400, message: "ERROR GET TASK: Missing task ID" });
-        }
-        const result = yield TaskModel_1.default.deleteOne({ _id: id });
-        if (result.deletedCount === 0) {
-            return res.send({ status: 404, message: "ERROR GET TASK: Task not found" });
-        }
-        res.send({ success: true, deletedCount: result.deletedCount });
+        const { _id, userId } = req.query;
+        // const result = await Task.deleteOne({ _id: id });
+        // if (result.deletedCount === 0) {
+        //    return res.send({ status: 404, message: "ERROR GET TASK: Task not found" });
+        // }
+        const user = yield UserModel_1.default.findOneAndUpdate({ userId: userId === null || userId === void 0 ? void 0 : userId.toString() }, { $pull: { tasks: { _id } } }, // Remove all instances of the task with the specified _id
+        { new: true });
+        return res.send({ success: true });
     }
     catch (err) {
         console.error("ERROR DELETE TASK:", err);

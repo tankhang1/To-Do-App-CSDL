@@ -13,11 +13,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.addTask = void 0;
-const TaskModel_1 = __importDefault(require("../../models/TaskModel"));
+const UserModel_1 = __importDefault(require("../../models/UserModel"));
 const addTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { taskName, description, createdAt, updatedAt, userId, status } = req.body;
-        console.log(!taskName, description, createdAt, updatedAt, userId, status);
+        console.log(!taskName, description, createdAt, updatedAt, status);
         if (!taskName ||
             !description ||
             !createdAt ||
@@ -26,8 +26,20 @@ const addTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             !status) {
             return res.status(400).send("ERROR ADD TASK: Missing required fields");
         }
-        const newTask = yield TaskModel_1.default.create(req.body);
-        return res.status(200).json({ task: newTask });
+        const user = yield UserModel_1.default.findOne({ userId });
+        if (!user) {
+            const newTask = yield UserModel_1.default.create({
+                userId,
+                tasks: req.body,
+            });
+            return res.status(200).json({ task: newTask === null || newTask === void 0 ? void 0 : newTask.tasks });
+        }
+        const updatedTasks = user.tasks ? [...user.tasks] : [];
+        const updateUser = yield UserModel_1.default.findOneAndUpdate({ userId }, { tasks: [req.body, ...updatedTasks] }, { new: true });
+        if (updateUser === null || updateUser === void 0 ? void 0 : updateUser.tasks) {
+            return res.status(200).json({ task: updateUser === null || updateUser === void 0 ? void 0 : updateUser.tasks[0] });
+        }
+        return res.status(400).send("Cannot add new task");
     }
     catch (err) {
         console.error("ERROR ADD TASK:", err);

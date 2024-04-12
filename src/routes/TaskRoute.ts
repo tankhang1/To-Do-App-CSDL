@@ -3,7 +3,7 @@ import { deleteTask } from "../services/TaskService/DeleteTask";
 import {
   getAllTasks,
   searchTasksByText,
-  getPaginatedTasks
+  getPaginatedTasks,
 } from "../services/TaskService/GetTask";
 import { addTask } from "../services/TaskService/PostTask";
 import { updateTask } from "../services/TaskService/UpdateTask";
@@ -21,6 +21,6 @@ router.get("/getTodo", getAllTasks);
 
 router.get("/searchTodo", searchTasksByText);
 
-router.get('/getTodo/pagination', getPaginatedTasks);
+// router.get('/getTodo/pagination', getPaginatedTasks);
 
 export default router;

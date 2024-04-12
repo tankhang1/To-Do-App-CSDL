@@ -6,22 +6,24 @@ import User from "../../models/UserModel";
 export const updateTask = async (req: Request, res: Response) => {
   try {
     const { _id, userId, ...body } = req.body;
+    console.log("update", req.body);
     const user: IUser | null = await User.findOne({ userId });
     if (!user) {
       return res.status(404).send("ERROR UPDATE TASK: User not found");
     }
-    const updatedTask = await User.findOneAndUpdate(
-      { userId, "tasks._id": _id },
-      {
-        $set: { "tasks.$": { _id, ...body } },
-      },
-      { new: true }
-    );
+    const tasks = user.tasks;
+    const newTasks = tasks?.map((task) => {
+      if (task._id === _id)
+        return {
+          ...req.body,
+        };
+      return task;
+    });
+    console.log("new", newTasks);
+    await User.findOneAndUpdate({ userId }, { tasks: newTasks }, { new: true });
     //console.log("updateTask", updatedTask);
-    if (!updatedTask) {
-      return res.status(404).send("ERROR UPDATE TASK: Task not found");
-    }
-    return res.status(200).json({ updatedTask });
+
+    return res.status(200);
   } catch (error) {
     console.error("ERROR UPDATE TASK:", error);
     return res.status(500).send("ERROR UPDATE TASK: Internal Server Error");
